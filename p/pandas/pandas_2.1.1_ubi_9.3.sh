@@ -18,12 +18,13 @@
 #
 # -----------------------------------------------------------------------------
 PACKAGE_NAME=pandas
-PACKAGE_VERSION=${1:-v2.1.1}
+PACKAGE_VERSION=${1:-v2.2.3}
+PYTHON_VERSION=${2:-3.12}
 PACKAGE_URL=https://github.com/pandas-dev/pandas.git
 PACKAGE_DIR=pandas
 
 # Install system dependencies including SQLite and LZMA libraries
-yum install -y git gcc gcc-c++ python-devel gzip tar make wget xz cmake yum-utils openssl-devel \
+yum install -y git gcc gcc-c++ python${PYTHON_VERSION} python${PYTHON_VERSION}-devel python${PYTHON_VERSION}-pip gzip tar make wget xz cmake yum-utils openssl-devel \
     openblas-devel bzip2-devel bzip2 zip unzip libffi-devel zlib-devel autoconf \
     automake libtool cargo pkgconf-pkg-config.ppc64le info.ppc64le fontconfig.ppc64le \
     fontconfig-devel.ppc64le sqlite-devel 
@@ -37,18 +38,18 @@ git checkout $PACKAGE_VERSION
 git submodule update --init --recursive
 
 # Install dependencies
-pip3 install --upgrade pip
-pip install pytest hypothesis build meson meson-python
-pip install cython==0.29.36
-pip install --upgrade --force-reinstall setuptools
-pip install --upgrade six
-pip install meson-python==0.13.1
-pip install patchelf==0.11.0
-pip install meson==1.2.1
-pip install oldest-supported-numpy==2022.8.16
-pip install ninja
-pip install versioneer[toml]
-pip install numpy==1.26.4
+python${PYTHON_VERSION} -m pip install --upgrade pip
+python${PYTHON_VERSION} -m pip install pytest hypothesis build meson meson-python
+python${PYTHON_VERSION} -m pip install cython
+python${PYTHON_VERSION} -m pip install --upgrade --force-reinstall setuptools
+python${PYTHON_VERSION} -m pip install --upgrade six
+python${PYTHON_VERSION} -m pip install meson-python==0.13.1
+python${PYTHON_VERSION} -m pip install patchelf==0.11.0
+python${PYTHON_VERSION} -m pip install meson==1.2.1
+python${PYTHON_VERSION} -m pip install oldest-supported-numpy==2022.8.16
+python${PYTHON_VERSION} -m pip install ninja
+python${PYTHON_VERSION} -m pip install versioneer[toml]
+python${PYTHON_VERSION} -m pip install numpy
 
 # Install pandas package
 if ! (pip install .); then
