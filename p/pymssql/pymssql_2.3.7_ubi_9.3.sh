@@ -2,7 +2,7 @@
 # ----------------------------------------------------------------------------
 #
 # Package       : pymssql
-# Version       : v2.3.2
+# Version       : v2.3.7
 # Source repo   : https://github.com/pymssql/pymssql.git
 # Tested on     : UBI:9.3
 # Language      : Python
@@ -20,7 +20,7 @@
 
 #variables
 PACKAGE_NAME=pymssql
-PACKAGE_VERSION=${1:-v2.3.2}
+PACKAGE_VERSION=${1:-v2.3.7}
 PACKAGE_URL=https://github.com/pymssql/pymssql.git
 CURRENT_DIR=`pwd`
 
@@ -40,13 +40,22 @@ python3.12 -m pip install cython
 python3.12 -m pip install setuptools_scm>=5.0
 python3.12 -m pip install wheel>=0.36.2
 
+if [ "$(printf '%s\n' "2.3.4" "${PACKAGE_VERSION#v}" | sort -V | head -n1)" = "2.3.4" ] && [ "${PACKAGE_VERSION#v}" != "2.3.4" ]; then
+    echo "Package version ${PACKAGE_VERSION} is higher than 2.3.4, adding --wheel flag"
+    EXTRA_FLAGS="--wheel"
+else
+    EXTRA_FLAGS=""
+fi
+
 python3.12 dev/build.py \
             --ws-dir=./freetds \
             --dist-dir=./dist \
             --with-openssl=yes \
             --enable-krb5 \
             --sdist \
-            --static-freetds
+            --static-freetds \
+            $EXTRA_FLAGS
+            
 python3.12 -m pip install pymssql --no-index -f dist
 python3.12 setup.py bdist_wheel
 
